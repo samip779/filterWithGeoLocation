@@ -94,7 +94,9 @@ export class StoresService {
         return store;
       });
 
-    const sorted = filteredStores.sort((a, b) => a.distance - b.distance);
+    const sorted = filteredStores.sort(
+      (a: any, b: any) => a.distance - b.distance,
+    );
 
     return sorted;
   }
