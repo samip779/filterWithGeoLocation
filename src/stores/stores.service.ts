@@ -63,7 +63,7 @@ export class StoresService {
 
   async getByRangeWithoutExt(lat: number, long: number, range: number) {
     range = range || 1000;
-    const stores = await this.storeRepository.find({
+    const stores: any = await this.storeRepository.find({
       select: {
         id: true,
         name: true,
@@ -72,16 +72,27 @@ export class StoresService {
       },
     });
 
-    const filteredStores = stores.filter((store) => {
-      const distance = getDistanceFromLatLonInKm(
-        lat,
-        long,
-        store.lat,
-        store.long,
-      );
+    const filteredStores = stores
+      .filter((store: any) => {
+        const distance = getDistanceFromLatLonInKm(
+          lat,
+          long,
+          store.lat,
+          store.long,
+        );
 
-      return distance <= range;
-    });
+        return distance <= range;
+      })
+      .map((store: any) => {
+        store.distance = getDistanceFromLatLonInKm(
+          lat,
+          long,
+          store.lat,
+          store.long,
+        );
+
+        return store;
+      });
 
     return filteredStores;
   }
