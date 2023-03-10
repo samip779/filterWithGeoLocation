@@ -4,6 +4,7 @@ import { Store } from './entities/store.entity';
 import { Repository } from 'typeorm';
 import { Point } from 'geojson';
 import { createStoreDto } from './dto/create-store.dto';
+import { getDistanceFromLatLonInKm } from '../helpers/helper';
 
 @Injectable()
 export class StoresService {
@@ -58,5 +59,30 @@ export class StoresService {
       .getRawMany();
 
     return stores;
+  }
+
+  async getByRangeWithoutExt(lat: number, long: number, range: number) {
+    range = range || 1000;
+    const stores = await this.storeRepository.find({
+      select: {
+        id: true,
+        name: true,
+        lat: true,
+        long: true,
+      },
+    });
+
+    const filteredStores = stores.filter((store) => {
+      const distance = getDistanceFromLatLonInKm(
+        lat,
+        long,
+        store.lat,
+        store.long,
+      );
+
+      return distance <= range;
+    });
+
+    return filteredStores;
   }
 }

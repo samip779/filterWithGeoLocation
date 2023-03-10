@@ -29,6 +29,10 @@ export class StoresController {
 
   @Get('range')
   getByRange(@Query() query: { lat: number; long: number; range: number }) {
-    return this.storesService.getByRange(+query.lat, +query.long, +query.range);
+    return this.storesService.getByRangeWithoutExt(
+      +query.lat,
+      +query.long,
+      +query.range,
+    );
   }
 }
